@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <style>
+      html {
+          /* to get rid of the weird 2px error */
+          overflow: hidden;
+      }
+      body {
+          margin: 0;
+          width:100vw;
+          height: 100vh;
+          background-color: black
+      }
+      #sketch {
+          width:100%;
+          height:100%;
+      }
+      #p5-wrapper{
+          display: none;
+      }
+      #three-canvas {
+        display:none;
+      }
+      #hydra-canvas {
+          width: 100%;
+          height: 100%;
+      }
+  </style>
+  </head>
+  <body>
+    <div id="sketch">
+      <canvas id="hydra-canvas"></canvas>
+      <canvas id="three-canvas"></canvas>
+      <div id="p5-wrapper"></div>
+    </div>
+    <script src="/lib/hydra-synth.js"></script>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
