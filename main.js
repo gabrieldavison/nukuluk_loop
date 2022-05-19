@@ -2,6 +2,7 @@ import p5 from "p5";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Timer } from "./timer.js";
+import logoURL from "./logo.glb";
 
 const p5Sketch = (p) => {
   p.setup = () => {
@@ -17,6 +18,9 @@ const p5Sketch = (p) => {
 };
 
 const threeSketch = (renderer) => {
+  //// CONSTANTS
+  const rotSpeed = 0.0025;
+
   //// SETUP SCENE AND CAMERA
   const scene = new THREE.Scene();
   renderer.setClearColor(0x000000, 0);
@@ -26,7 +30,16 @@ const threeSketch = (renderer) => {
     0.1,
     1000
   );
-  camera.position.set(0, 0, 100);
+
+  let camPos;
+  const canvasWidth = renderer.domElement.width;
+
+  if (canvasWidth > 600) {
+    camPos = 150;
+  } else {
+    camPos = 350;
+  }
+  camera.position.set(0, 0, camPos);
 
   //// LIGHTING
   const pLight = new THREE.PointLight(0xff0000, 3, 200);
@@ -35,14 +48,6 @@ const threeSketch = (renderer) => {
   const aLight = new THREE.AmbientLight(0x404040, 1);
   scene.add(aLight);
 
-  // Load Texture
-  // const textureLoader = new THREE.TextureLoader();
-  // const treeMesh = new THREE.MeshBasicMaterial({
-  //   map: textureLoader.load("./tree01.png"),
-  //   transparent: true,
-  //   depthTest: false, // Need this to get rid of overlapping transparency issues
-  // });
-
   const m = THREE.MathUtils;
   const rand = (min, max) => m.mapLinear(Math.random(), 0, 1, min, max);
 
@@ -50,13 +55,8 @@ const threeSketch = (renderer) => {
   const gltfLoader = new GLTFLoader();
   let logo;
   gltfLoader.load(
-    "./assets/logo.glb",
+    logoURL,
     function (gltf) {
-      // obj.traverse(function (child) {
-      //   if (child.isMesh) {
-      //     child.material = treeMesh;
-      //   }
-      // });
       scene.add(gltf.scene);
       gltf.scene.scale.set(10, 10, 10);
       logo = gltf;
@@ -70,7 +70,7 @@ const threeSketch = (renderer) => {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     if (logo !== undefined) {
-      logo.scene.rotation.y += 0.005;
+      logo.scene.rotation.y += rotSpeed;
     }
   }
   animate();
@@ -111,14 +111,8 @@ const setup = () => {
   hydraSketch();
 };
 
-const tvStatic = () =>
-  src(o1)
-    .diff(noise(800).modulate(noise(1000)))
-    .out();
-
 const mod1 = () => src(o1).modulate(voronoi(3)).out();
 const mod2 = () => src(o1).modulate(voronoi(10)).out();
-const mod3 = () => src(o1).modulate(voronoi(50)).out();
 
 const pix1 = () => src(o1).pixelate(80, 80).out();
 const pix2 = () => src(o1).pixelate(200, 200).out();
@@ -147,6 +141,6 @@ window.onload = () => {
   t.every(59, repeat1);
   t.every(35, repeat2);
   t.every(30, () => t.setTickLength(100));
-  t.every(60, () => t.setTickLength(1000));
+  t.every(70, () => t.setTickLength(1000));
   t.start();
 };
